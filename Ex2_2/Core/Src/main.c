@@ -103,7 +103,7 @@ int main(void)
 	if(i % 300 == 0) {
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_1);
 	}
-	i %= 600;
+	i %= 60000;
 	HAL_Delay(1);
     /* USER CODE END WHILE */
 
