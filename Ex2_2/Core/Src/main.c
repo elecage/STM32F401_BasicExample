@@ -96,15 +96,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  i++;
-	  if(i % 200 == 0) {
-		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
-	  }
-	  if(i % 300 == 0) {
-		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_1);
-	  }
-	  i %= 60000;
-	  HAL_Delay(1);
+	i++;
+	if(i % 200 == 0) {
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
+	}
+	if(i % 300 == 0) {
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_1);
+	}
+	i %= 600;
+	HAL_Delay(1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
