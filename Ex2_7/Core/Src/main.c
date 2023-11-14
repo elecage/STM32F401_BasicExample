@@ -109,8 +109,7 @@ int main(void)
   {
 	  for( i = 0 ; i < 10 ; i++ )
 	  {
-		  GPIOC->ODR = 0x00;
-		  GPIOC->ODR = sec[i] & 0x000000ff;
+		  GPIOC->BSRR = sec[i];
 		  HAL_Delay(1000);
 	  }
     /* USER CODE END WHILE */
