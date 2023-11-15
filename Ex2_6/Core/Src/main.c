@@ -77,7 +77,7 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	  int16_t i;
+  int16_t i;  // 출력되는 숫자
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -109,7 +109,7 @@ int main(void)
   {
 	  for( i = 0 ; i < 10 ; i++ )
 	  {
-		  GPIOC->BSRR = sec[i];
+		  GPIOC->BSRR = sec[i];  // BSRR에 각각 LED를 끌 부분과 켤 부분을 설정
 		  HAL_Delay(1000);
 	  }
     /* USER CODE END WHILE */
