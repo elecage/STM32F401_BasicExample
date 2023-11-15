@@ -77,7 +77,8 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  int16_t i;
+  int16_t count = 0;
+  GPIO_PinState button_curr, button_prev, button_temp;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -100,18 +101,25 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  GPIOC->BSRR = sec[0];
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  for( i = 0 ; i < 10 ; i++ )
+	  button_temp = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+	  HAL_Delay(10);
+	  if(button_temp == HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
 	  {
-		  GPIOC->BSRR = sec[i];
-		  HAL_Delay(1000);
+		  button_curr = button_temp;
 	  }
+
+	  if(button_curr == GPIO_PIN_RESET && button_prev == GPIO_PIN_SET)
+	  {
+		  GPIOC->BSRR = sec[++count % 10];
+	  }
+	  button_prev = button_curr;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
