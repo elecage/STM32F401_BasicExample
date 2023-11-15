@@ -101,13 +101,14 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  GPIOC->BSRR = sec[0];
+  GPIOC->BSRR = sec[0];  // 최초에 출력하는 값을 보여줌
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // 디바운싱 코드
 	  button_temp = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
 	  HAL_Delay(10);
 	  if(button_temp == HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
@@ -115,6 +116,7 @@ int main(void)
 		  button_curr = button_temp;
 	  }
 
+	  // 버튼이 눌렸을 때 7-세그먼트 값 갱신
 	  if(button_curr == GPIO_PIN_RESET && button_prev == GPIO_PIN_SET)
 	  {
 		  GPIOC->BSRR = sec[++count % 10];
