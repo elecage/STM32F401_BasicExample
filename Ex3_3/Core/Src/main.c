@@ -55,7 +55,7 @@ uint32_t seg[10]= {
                     0x007F0080,  // 8
                     0x006F0090   // 9
                    };
-uint16_t count = 0;
+volatile uint16_t count = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
