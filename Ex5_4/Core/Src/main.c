@@ -26,9 +26,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-typedef enum {NONE, DO, DO_S, RE, RE_S, MI, FA,
-              FA_S, SOL, SOL_S, LA, LA_S, TI, DOH
-}NOTE;
 
 /* USER CODE END PTD */
 
@@ -43,23 +40,9 @@ typedef enum {NONE, DO, DO_S, RE, RE_S, MI, FA,
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-TIM_HandleTypeDef htim1;
-
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint16_t note[14] = {0, 3822, 3608, 3405, 3214, 3034, 2863,
-                     2703, 2551, 2408, 2273, 2145, 2025, 1911};
-uint16_t nn[] = {SOL, SOL, LA, LA, SOL, SOL, MI,
-                 SOL, SOL, MI, MI, RE, NONE,
-                 SOL, SOL, LA, LA, SOL, SOL, MI,
-                 SOL, MI, RE, MI, DO, NONE};
-uint16_t beats[] = {400, 400, 400, 400, 400, 400, 800,
-                   400, 400, 400, 400, 800, 800,
-                   400, 400, 400, 400, 400, 400, 800,
-                   400, 400, 400, 400, 800, 800,
-};
-uint16_t size = 26;
 
 /* USER CODE END PV */
 
@@ -67,7 +50,6 @@ uint16_t size = 26;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -84,7 +66,7 @@ static void MX_TIM1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  int i = 0;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -106,25 +88,17 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
+  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
+  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
+  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	    for(i = 0 ; i < size ; i++)
-	    {
-	        __HAL_TIM_SET_AUTORELOAD(&htim1, note[nn[i]]);
-	        HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
-	        HAL_Delay(beats[i]);
-	        HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
-	        HAL_Delay(100);
-	    }
-	    HAL_Delay(3000);
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -176,81 +150,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-}
-
-/**
-  * @brief TIM1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM1_Init(void)
-{
-
-  /* USER CODE BEGIN TIM1_Init 0 */
-
-  /* USER CODE END TIM1_Init 0 */
-
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_OC_InitTypeDef sConfigOC = {0};
-  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
-
-  /* USER CODE BEGIN TIM1_Init 1 */
-
-  /* USER CODE END TIM1_Init 1 */
-  htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 42;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 65535;
-  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 0;
-  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIM_OC_Init(&htim1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sConfigOC.OCMode = TIM_OCMODE_TOGGLE;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
-  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  if (HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
-  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
-  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
-  sBreakDeadTimeConfig.DeadTime = 0;
-  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
-  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
-  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
-  if (HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM1_Init 2 */
-
-  /* USER CODE END TIM1_Init 2 */
-  HAL_TIM_MspPostInit(&htim1);
-
 }
 
 /**
